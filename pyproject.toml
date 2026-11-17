@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "adk-refund-agent"
+version = "1.0.0"
+description = "Tool-only, zero-hallucination E-Commerce Refund Orchestrator built on Google ADK"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "google-adk>=1.0.0",
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.setuptools.packages.find]
+include = ["refund_agent*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"
