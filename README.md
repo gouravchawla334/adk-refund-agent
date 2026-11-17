@@ -1,6 +1,6 @@
 # adk-refund-agent
 
-[Read the full architectural deep-dive on Dev.to](https://dev.to/your-username/your-article-slug-placeholder)
+[Read the full architectural deep-dive on Dev.to](https://dev.to/gouravchawla28/building-production-grade-ai-agents-how-i-designed-an-autonomous-refund-system-with-google-adk-5g58)
 
 A production-style **E-Commerce Refund Orchestrator** built with the Google Agent Development Kit (ADK).
 The LLM (`gemini-2.5-flash`) is only a semantic router and plain-English interface. Every lookup,
