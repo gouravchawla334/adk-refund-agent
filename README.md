@@ -1,12 +1,51 @@
-# adk-refund-agent
+<div align="center">
+<h1>
+  🛡️ Adk-Refund-Agent  
+</h1>
+ 
+### A deterministic, guardrailed E-Commerce Refund Orchestrator built with Google ADK
+ 
+The LLM only **routes and talks**. Every lookup, calculation and payout runs through **deterministic Python tools** guarded by ADK lifecycle callbacks.
+ 
+[![CI](https://github.com/gouravchawla334/adk-refund-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/gouravchawla334/adk-refund-agent/actions)
+![Google ADK](https://img.shields.io/badge/Google%20ADK-Agent%20Framework-4285F4?logo=google&logoColor=white)
+![Gemini](https://img.shields.io/badge/Gemini-2.5%20Flash-8E75B2?logo=googlegemini&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-parameterized-003B57?logo=sqlite&logoColor=white)
+ 
+[📝 Architecture deep-dive on Dev.to](https://dev.to/gouravchawla28/building-production-grade-ai-agents-how-i-designed-an-autonomous-refund-system-with-google-adk-5g58) ·
+[📄 Architecture doc](docs/ARCHITECTURE.md) ·
+[📋 PRD](docs/PRD.md)
+ 
+</div>
 
-[Read the full architectural deep-dive on Dev.to](https://dev.to/gouravchawla28/building-production-grade-ai-agents-how-i-designed-an-autonomous-refund-system-with-google-adk-5g58)
+## 📌 Overview
+ 
+Letting an LLM handle money is risky: it can guess policy, make arithmetic mistakes, get prompt-injected or loop forever. This project shows a safer pattern for production agents:
+ 
+> **The model is a semantic router and a plain-English interface. It never decides policy, does math, or touches the database directly.**
+ 
+Customers describe their problem in natural language. The agent identifies intent, then drives a strict, tool-only workflow (look up order → check status → calculate refund → confirm → pay out or escalate). Every step is enforced in code through ADK callbacks, not just requested in a prompt.
+ 
+## ✨ Key Features
+ 
+| | Feature | What it does |
+|---|---|---|
+| 🧮 | **Deterministic refund math** | Restocking fees, shipping rules and totals are computed in Python, never by the LLM |
+| 🧑‍⚖️ | **Human-in-the-Loop gates** | Two-turn confirmation: a payout is blocked in the same turn as the calculation |
+| 💸 | **$150 payout cap** | Refunds above the cap are blocked and routed to a finance HITL ticket |
+| 🚨 | **Fraud routing** | Fraud score ≥ 0.80 forces escalation to finance |
+| 🔒 | **SQL-injection safe** | Strict order-ID regex plus parameterized queries everywhere |
+| 🎯 | **Domain lock** | Off-topic requests are refused; anti-loop protection in model callbacks |
+| 🔁 | **Idempotent payouts** | Keys of the form `IDEMP-<ORDER_ID>-<CENTS>` prevent duplicate refunds |
+| 💰 | **Cost controls** | `max_output_tokens=300`, `temperature=0.0`, thinking disabled, static prompt, pruned tool output |
+| ✅ | **Offline tests** | Unit tests drive tools and callbacks directly, with no network or API key |
+ 
+## 🏗️ Architecture
+<img width="568" height="702" alt="image" src="https://github.com/user-attachments/assets/b1ca9a30-686c-4cb1-92ca-d8a232c190e1" />
+ 
+### Project structure
 
-A production-style **E-Commerce Refund Orchestrator** built with the Google Agent Development Kit (ADK).
-The LLM (`gemini-2.5-flash`) is only a semantic router and plain-English interface. Every lookup,
-calculation and payout runs through deterministic Python tools guarded by ADK lifecycle callbacks.
-
-## Architecture
 ```text
 adk-refund-agent/
 ├── .github/workflows/ci.yml
@@ -65,3 +104,26 @@ No network access or API key is required; tests drive the tools and callbacks di
 ## Business rules (configurable in `refund_agent/config.py`)
 Restocking fee applies to the item subtotal and is waived for `DEFECTIVE` / `NOT_AS_PICTURED`. Shipping is
 refunded only for those reasons. Fraud score >= 0.80 forces escalation.
+
+## 🧰 Tech Stack
+ 
+**Google ADK** · **Gemini 2.5 Flash** · **Python** · **SQLite** · **Pydantic** · **Pytest** · **GitHub Actions**
+ 
+## 📚 Learn More
+ 
+- 📝 [Building Production-Grade AI Agents: how I designed an autonomous refund system with Google ADK](https://dev.to/gouravchawla28/building-production-grade-ai-agents-how-i-designed-an-autonomous-refund-system-with-google-adk-5g58) (full write-up on Dev.to)
+- 🏗️ [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md): callback lifecycle and threat model
+- 📋 [`docs/PRD.md`](docs/PRD.md): requirements and SLAs
+## 👤 Author
+ 
+**Gourav Chawla**, GCP Data Engineer building AI agents.
+ 
+[Portfolio](https://gouravchawla.netlify.app/) · [LinkedIn](https://linkedin.com/in/gourav-chawla) · [Dev.to](https://dev.to/gouravchawla28) · [GitHub](https://github.com/gouravchawla334)
+ 
+---
+ 
+<div align="center">
+If you found this useful, consider giving the repo a ⭐
+ 
+</div>
+
